@@ -75,7 +75,7 @@ class GraphemesTest(TestCase):
 
 def read_test_data():
     TEST_CASES = []
-    with open(os.path.join(os.path.dirname(__file__), "../unicode-data/GraphemeBreakTest.txt"), 'r') as f:
+    with open(os.path.join(os.path.dirname(__file__), "../unicode-data/GraphemeBreakTest.txt"), 'r', encoding='utf-8')  as f:
         for line in f.readlines():
             if line.startswith("#"):
                 continue
