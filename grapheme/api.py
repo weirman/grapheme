@@ -77,6 +77,17 @@ def slice(string, start=None, end=None, graphemelengths=None):
     'ி (ni)'
     >>> grapheme.slice(string, 7)
     ' (ni)'
+    >>> grapheme.slice(string, start = grapheme.length(string) - 5)
+    ' (ni)'
+    >>> grapheme.slice(string, start = grapheme.length(string) - 5, end = grapheme.length(string) - 3)
+    ' ('
+
+    >>> # If the data volume is large and the slice() method needs to be reused, the following approach is recommended.
+    >>> graphemelengths = list(grapheme.grapheme_lengths(string))
+    >>> length = grapheme.length(string)
+    >>> grapheme.slice(string, start = length - 5, end = length - 3, graphemelengths = graphemelengths)
+    ' ('
+
     """
 
     if graphemelengths is None:
@@ -84,7 +95,7 @@ def slice(string, start=None, end=None, graphemelengths=None):
     else:
         if type(graphemelengths) is not list:
             graphemelengths = list(graphemelengths)
-            
+
     if start is None:
         start = 0
 
