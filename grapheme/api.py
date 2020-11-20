@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from grapheme.finder import GraphemeIterator, get_last_certain_break_index
 
-
 UNICODE_VERSION = "13.0.0"
 
 
@@ -63,7 +62,7 @@ def grapheme_lengths(string):
     return iter(len(g) for g in graphemes(string))
 
 
-def slice(string, start=None, end=None):
+def slice(string, start=None, end=None, graphemelengths=None):
     """
     Returns a substring of the given string, counting graphemes instead of codepoints.
 
@@ -80,27 +79,37 @@ def slice(string, start=None, end=None):
     ' (ni)'
     """
 
+    if graphemelengths is None:
+        graphemelengths = list(grapheme_lengths(string))
+    else:
+        if type(graphemelengths) is not list:
+            graphemelengths = list(graphemelengths)
+            
     if start is None:
         start = 0
-    if end is not None and start >= end:
-        return ""
+
+    if end is None:
+        end = len(graphemelengths)
 
     if start < 0:
-        raise NotImplementedError("Negative indexing is currently not supported.")
+        start = len(graphemelengths) + start
 
-    sum_ = 0
-    start_index = None
-    for grapheme_index, grapheme_length in enumerate(grapheme_lengths(string)):
-        if grapheme_index == start:
-            start_index = sum_
-        elif grapheme_index == end:
-            return string[start_index:sum_]
-        sum_ += grapheme_length
+    if end < 0:
+        end = len(graphemelengths) + end
+    if start > end:
+        raise NotImplementedError("End indexing(%d) is bigger than Start indexing(%d)." % (end, start))
 
-    if start_index is not None:
-        return string[start_index:]
+    if start is not None and end is not None:
+        return string[sum(graphemelengths[:start]):sum(graphemelengths[:end])]
+
+    elif start is None:
+        return string[:sum(graphemelengths[:end])]
+
+    elif end is None:
+        return string[sum(graphemelengths[:start]):]
 
     return ""
+
 
 def contains(string, substring):
     """
